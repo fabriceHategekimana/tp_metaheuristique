@@ -1,0 +1,76 @@
+# NK-landscape models
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+from module import *
+```
+
+## Work to do
+
+```{python}
+N = 21
+Ks = [0, 1, 2]
+```
+
+Je vais faire la transformation.
+
+## K = 0
+
+```{python}
+K = 0
+
+sequence = generate_sequence(N)
+
+deterministic_results = [deterministic_hillclimb(sequence, K) for x in range(50)]
+probabilistic_results = [probabilistic_hillclimb(sequence, K) for x in range(50)]
+```
+
+```{python}
+res = [hamming_distance(deterministic_result, x) for x in probabilistic_results]
+res
+```
+
+-----------------------------------------
+
+## K = 1
+
+```{python}
+K = 1
+
+generated_sequences = [generate_sequence(N) for x in range(50)]
+deterministic_results = [deterministic_hillclimb(sequence, K) for sequence in generated_sequences]
+probabilistic_results = [probabilistic_hillclimb(sequence, K) for sequence in generated_sequences]
+```
+
+```{python}
+res = [hamming_distance(deterministic_result, x) for x in probabilistic_results]
+res
+```
+
+## K = 2
+
+```{python}
+K = 2
+
+generated_sequences = [generate_sequence(N) for x in range(50)]
+deterministic_results = [deterministic_hillclimb(sequence, K) for sequence in generated_sequences]
+probabilistic_results = [probabilistic_hillclimb(sequence, K) for sequence in generated_sequences]
+```
+
+```{python}
+res = [hamming_distance(x[0], x[1]) for x in zip(deterministic_results, probabilistic_results)]
+res
+```
+
+```{python}
+for x in zip(deterministic_results, probabilistic_results):
+	print(x[0], x[1])
+```
+
+## Work to return
+
+
+```{python}
+
+```
