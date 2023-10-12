@@ -2,3 +2,4 @@
 
 ## Est-ce que je dois noter qqp la configuration des 5 problèmes générés aléatoirement ?
 
+## C'est quoi le metropolis rule ?
