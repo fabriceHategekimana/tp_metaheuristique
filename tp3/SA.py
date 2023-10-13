@@ -1,12 +1,12 @@
-TaskDefinitionFile = str
-Path = list[str]  # same city at the beginning and at the end
+from module import TaskDefinitionFile, Path, read_city
 
 
 def get_energy(path: Path) -> int:
     return len(path)
 
 
-def simulated_annealing(cities: TaskDefinitionFile) -> tuple[Path, int]:
+def simulated_annealing(file: TaskDefinitionFile) -> tuple[Path, int]:
+    cities = read_city(file)
     path = generate_path(cities)  # random
     temperature = generate_temperatur(cities) # see initial temperature equation
     while not frozen():
