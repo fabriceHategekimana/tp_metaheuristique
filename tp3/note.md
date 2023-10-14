@@ -1,7 +1,21 @@
 ### Initial_temperature
 
+We will try to isolate the $T_0$:
+
 $$
-e^{Hello} = 0.5
+e^{\frac{-(|\Delta E|)}{T_0}} = 0.5
+$$
+
+$$
+ln(e^{\frac{-(|\Delta E|)}{T_0}}) = ln(0.5)
+$$
+
+$$
+\frac{-(|\Delta E|)}{T_0} = ln(0.5)
+$$
+
+$$
+T_0 = \frac{-(|\Delta E|)}{ln(0.5)}
 $$
 
 TODO :
