@@ -9,3 +9,7 @@ De plus le lien entre mon code et l'énnoncé est un peu flou (Donc difficile de
 J'ai réussi à faire marcher le code du simulated annealing. Cependant, je ne peux pas vraiment mesurer son efficacité.
 
 J'ai pu terminer le code de la version greedy et tester son resultat.
+
+## jeu 26 oct 2023 23:38:27 CEST
+
+J'ai testé le greedy sur des plus grande valeur et ça crash vite. Il va falloir trouver des méthodes plus optimisées (numpy, pandas)

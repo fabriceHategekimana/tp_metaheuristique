@@ -1,3 +1,4 @@
+from collections.abc import Callable
 from functools import reduce
 import numpy as np
 
@@ -16,11 +17,12 @@ def get_distance(acc: tuple[float, str], y: str, cities: Cities) -> tuple[float,
     return (acc[0] + distance(acc[1], y, cities), y)
 
 
-def get_energy_generator(cities: Cities):
+def get_energy_generator(cities: Cities) -> Callable:
     def get_energy(path: Path) -> float:
+        p = list(path)
         return reduce(lambda acc, y: get_distance(acc, y, cities),
-                      path[1:]+[path[0]],
-                      (0.0, path[0]))[0]
+                      p[1:]+[p[0]], (0.0, p[0]))[0]
+    return get_energy
 
 
 def read_city(file: TaskDefinitionFile) -> tuple[Path, Cities]:

@@ -13,6 +13,20 @@ class EquilibrumRecord:
     n: int = attr.ib(default=0)
 
 
+class TemperatureRecord:
+    record: list[float] = [0, 0]
+
+    def __init__(self, initial_temperature: float):
+        self.record.append(initial_temperature)
+
+    def push(self, temperature):
+        self.record.pop(0)
+        self.record.append(temperature)
+
+    def get_record(self):
+        return self.record.copy()
+
+
 def generate_randint_tuple(n: int):
     r1 = random.randint(0, n-1)
     r2 = random.randint(0, n-1)
@@ -43,8 +57,8 @@ def generate_temperature(path: Path, get_energy: Callable) -> int:
     return -(diff_path(path, get_energy))/np.log(0.5)  # apply natural logarithm
 
 
-def frozen(temperature_record: list[float]) -> bool:
-    [x, y, z] = temperature_record
+def frozen(temperature_record: TemperatureRecord) -> bool:
+    [x, y, z] = temperature_record.get_record()
     return (x == y) and (y == z)
 
 
@@ -61,8 +75,12 @@ def metropolis_rule(energy: float, temperature: float):
     return 1.0 if energy < 0 else np.exp((-energy)/temperature)
 
 
-def acceptance(old_path: Path, new_path: Path, energy: float, temperature: float) -> Path:
-    return random.random() > metropolis_rule(energy, temperature)
+def acceptance(old_path: Path, new_path: Path, temperature: float, new_temperature: float, equilibrum_record: EquilibrumRecord) -> Path:
+    equilibrum_record.new_tentative()
+    res = random.random() > metropolis_rule(new_temperature, temperature)
+    if res:
+        equilibrum_record.accepted()
+    return res
 
 
 def simulated_annealing(file: TaskDefinitionFile) -> tuple[Path, int]:
@@ -70,12 +88,15 @@ def simulated_annealing(file: TaskDefinitionFile) -> tuple[Path, int]:
     get_energy = get_energy_generator(cities)
     path = generate_path(path)  # random
     temperature = generate_temperature(path, get_energy)  # see initial temperature equation
-    temperature_record = [0.0, 0.0, temperature]
+    temperature_record = TemperatureRecord(temperature)
     equilibrum_record = EquilibrumRecord(0, 0, len(cities))
     while not frozen(temperature_record):
         while equilibrum(equilibrum_record):
             new_path = update(path)  # random permutation
-            new_path = acceptance(path, new_path, get_energy(new_path), temperature)
+            new_temperature = get_energy(new_path)
+            temperature_record.push(new_temperature)
+            new_path = acceptance(path, new_path, temperature, new_temperature, equilibrum_record)
+            temperature = new_temperature
     return path, get_energy(path)
 
 

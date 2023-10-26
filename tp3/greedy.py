@@ -9,12 +9,13 @@ import itertools
 
 def greedy(file: TaskDefinitionFile) -> tuple[Path, int]:
     path, cities = read_city(file)
-    permutations = np.array(list(itertools.permutations(path)))
-    energies = get_energy_generator(cities)(permutations)
+    permutations = list(itertools.permutations(path))
+    get_energy = get_energy_generator(cities)
+    energies = [get_energy(p) for p in permutations]
     new_path = permutations[np.argmin(energies)]
     return new_path, get_energy(new_path)
 
 
 if __name__ == '__main__':
-    res = greedy("03/simple_circle.dat")
+    res = greedy("03/cities_tp3.dat")
     print("res:", res)
