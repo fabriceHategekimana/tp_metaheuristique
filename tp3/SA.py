@@ -12,6 +12,12 @@ class EquilibrumRecord:
     tentatives: int = attr.ib(default=0)
     n: int = attr.ib(default=0)
 
+    def new_tentative(self):
+        self.tentatives += 1
+
+    def accepted(self):
+        self.accepted_perturbations += 1
+
 
 class TemperatureRecord:
     record: list[float] = [0, 0]
