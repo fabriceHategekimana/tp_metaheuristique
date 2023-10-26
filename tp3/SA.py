@@ -9,7 +9,7 @@ import attr
 class EquilibrumRecord:
     accepted_perturbations: int = attr.ib(default=0)
     tentatives: int = attr.ib(default=0)
-    n: int
+    n: int = attr.ib(default=0)
 
 
 def get_energy(path: Path) -> int:
@@ -57,14 +57,14 @@ def equilibrum(record: EquilibrumRecord) -> bool:
 
 
 def update(path: Path) -> Path:
-    return switch_path(path.copy())
+    return switch_path(path.copy(), 1)
 
 
 def metropolis_rule(energy: float, temperature: float):
     return 1.0 if energy < 0 else np.exp((-energy)/temperature)
 
 
-def acceptance(old_path: Path, new_path: Path, temperature: float) -> Path:
+def acceptance(old_path: Path, new_path: Path, energy: float, temperature: float) -> Path:
     return random.random() > metropolis_rule(energy, temperature)
 
 
@@ -72,7 +72,7 @@ def simulated_annealing(file: TaskDefinitionFile) -> tuple[Path, int]:
     path, cities = read_city(file)
     path = generate_path(path)  # random
     temperature = generate_temperature(path)  # see initial temperature equation
-    temperature_record = [0, 0, temperature]
+    temperature_record = [0.0, 0.0, temperature]
     equilibrum_record = EquilibrumRecord(0, 0, len(cities))
     while not frozen(temperature_record):
         while equilibrum(equilibrum_record):
@@ -84,4 +84,5 @@ def simulated_annealing(file: TaskDefinitionFile) -> tuple[Path, int]:
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         raise Exception("You should specify the file name")
-    simulated_annealing(sys.argv[1])
+    res = simulated_annealing(sys.argv[1])
+    print("res:", res)
