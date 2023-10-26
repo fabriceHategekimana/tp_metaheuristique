@@ -1,4 +1,5 @@
-from module import TaskDefinitionFile, Path, read_city, Cities
+from module import TaskDefinitionFile, Path, read_city, get_energy_generator
+from collections.abc import Callable
 import numpy as np
 import random
 import sys
@@ -10,10 +11,6 @@ class EquilibrumRecord:
     accepted_perturbations: int = attr.ib(default=0)
     tentatives: int = attr.ib(default=0)
     n: int = attr.ib(default=0)
-
-
-def get_energy(path: Path) -> int:
-    return len(path)
 
 
 def generate_randint_tuple(n: int):
@@ -37,13 +34,13 @@ def generate_path(uncycled_path: list[str]) -> Path:
     return uncycled_path
 
 
-def diff_path(path: Path) -> int:
+def diff_path(path: Path, get_energy: Callable) -> int:
     new_path = switch_path(path.copy(), 100)
     return np.abs(get_energy(new_path)-get_energy(path))
 
 
-def generate_temperature(path: Path) -> int:
-    return -(diff_path(path))/np.log(0.5)  # apply natural logarithm
+def generate_temperature(path: Path, get_energy: Callable) -> int:
+    return -(diff_path(path, get_energy))/np.log(0.5)  # apply natural logarithm
 
 
 def frozen(temperature_record: list[float]) -> bool:
@@ -70,15 +67,16 @@ def acceptance(old_path: Path, new_path: Path, energy: float, temperature: float
 
 def simulated_annealing(file: TaskDefinitionFile) -> tuple[Path, int]:
     path, cities = read_city(file)
+    get_energy = get_energy_generator(cities)
     path = generate_path(path)  # random
-    temperature = generate_temperature(path)  # see initial temperature equation
+    temperature = generate_temperature(path, get_energy)  # see initial temperature equation
     temperature_record = [0.0, 0.0, temperature]
     equilibrum_record = EquilibrumRecord(0, 0, len(cities))
     while not frozen(temperature_record):
         while equilibrum(equilibrum_record):
             new_path = update(path)  # random permutation
             new_path = acceptance(path, new_path, get_energy(new_path), temperature)
-    return path, len(path)
+    return path, get_energy(path)
 
 
 if __name__ == '__main__':
@@ -86,3 +84,7 @@ if __name__ == '__main__':
         raise Exception("You should specify the file name")
     res = simulated_annealing(sys.argv[1])
     print("res:", res)
+
+# TODO : faire en sorte à ce que'un chemin commence et fini par la même ville
+# TODO : implémenter la version greedy
+# TODO : checker simulated_annealing() ligne par ligne
