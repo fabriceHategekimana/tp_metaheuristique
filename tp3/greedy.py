@@ -7,7 +7,7 @@ import numpy as np
 import itertools
 
 
-def greedy(file: TaskDefinitionFile) -> tuple[Path, int]:
+def greedy(file: TaskDefinitionFile):
     path, cities = read_city(file)
     permutations = list(itertools.permutations(path))
     get_energy = get_energy_generator(cities)
@@ -17,5 +17,5 @@ def greedy(file: TaskDefinitionFile) -> tuple[Path, int]:
 
 
 if __name__ == '__main__':
-    res = greedy("03/cities_tp3.dat")
+    res = greedy("03/circle.dat")
     print("res:", res)

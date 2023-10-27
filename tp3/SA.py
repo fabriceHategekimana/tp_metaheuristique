@@ -61,7 +61,7 @@ def diff_path(path: Path, get_energy: Callable) -> int:
 
 
 def generate_temperature(path: Path, get_energy: Callable) -> Temperature:
-    return -(diff_path(path, get_energy))/np.log(0.5)  # apply natural logarithm
+    return -(diff_path(path, get_energy))/np.log(0.5)  
 
 
 def generate_frozen(get_energy, equilibrum_record):
@@ -129,7 +129,7 @@ def simulated_annealing(file: TaskDefinitionFile) -> tuple[Path, int]:
     energy_record, frozen, delta_energy = generate_frozen(get_energy, equilibrum_record)
     running = True
     while running:
-        new_path = update(path)  # random permutation
+        new_path = update(path) 
         d_energy = delta_energy(new_path, path)
         new_path = acceptance(path, new_path, temperature, d_energy)
         if equilibrum():
@@ -145,7 +145,3 @@ if __name__ == '__main__':
         raise Exception("You should specify the file name")
     res = simulated_annealing(sys.argv[1])
     print("res:", res)
-
-# TODO : faire en sorte à ce que'un chemin commence et fini par la même ville
-# TODO : implémenter la version greedy
-# TODO : checker simulated_annealing() ligne par ligne
