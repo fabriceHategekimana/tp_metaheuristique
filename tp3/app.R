@@ -1,8 +1,9 @@
 
-E = 1  # augmente
+E = -10:0  # augmente
 T = 1  # diminue
 y = exp(E/T)
-y
+
+plot(E, y)
 
 # E T
 # 1 1 -> 2.71

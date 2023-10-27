@@ -5,6 +5,8 @@ import numpy as np
 TaskDefinitionFile = str
 Path = list[str]  # same city at the beginning and at the end
 Cities = dict[str, tuple[float, float]]
+Temperature = float
+Energy = float
 
 
 def distance(cityA: str, cityB: str, cities: Cities) -> float:
@@ -18,7 +20,7 @@ def get_distance(acc: tuple[float, str], y: str, cities: Cities) -> tuple[float,
 
 
 def get_energy_generator(cities: Cities) -> Callable:
-    def get_energy(path: Path) -> float:
+    def get_energy(path: Path) -> Energy:
         p = list(path)
         return reduce(lambda acc, y: get_distance(acc, y, cities),
                       p[1:]+[p[0]], (0.0, p[0]))[0]

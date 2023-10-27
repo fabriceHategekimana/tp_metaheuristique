@@ -1,10 +1,8 @@
 # objective function
 
-Minimisation
-
+## Minimisation
 of(x) = delta_energy() = E_next - E_current > 0
 of(x) = delta_energy() = E_next - E_current < 0 // on veut accepter ça
-
 
 P(accept Next) = exp(deltaE/Temperature)
 

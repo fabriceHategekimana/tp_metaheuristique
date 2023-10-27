@@ -13,3 +13,14 @@ J'ai pu terminer le code de la version greedy et tester son resultat.
 ## jeu 26 oct 2023 23:38:27 CEST
 
 J'ai testé le greedy sur des plus grande valeur et ça crash vite. Il va falloir trouver des méthodes plus optimisées (numpy, pandas)
+
+## ven 27 oct 2023 14:32:24 CEST
+Je ne sais pas pourquoi mais le code pour les viles circulaires donne toujours 95 tours avec 100% de transactions acceptées.
+Je vais essayer de me renseigner d'avantage sur la fonction d'acceptance.
+
+## ven 27 oct 2023 16:27:59 CEST
+Je pense que je confonds les notions de température et d'énergie
+
+## ven 27 oct 2023 17:57:51 CEST
+J'ai réussi à caché les structures mutables pour rendre le code plus lisible.
+À voir si c'est facile à debugger ou réellement plus pratique que la programmation orientée objet (outre l'économie en place).
