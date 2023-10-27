@@ -24,3 +24,8 @@ Je pense que je confonds les notions de température et d'énergie
 ## ven 27 oct 2023 17:57:51 CEST
 J'ai réussi à caché les structures mutables pour rendre le code plus lisible.
 À voir si c'est facile à debugger ou réellement plus pratique que la programmation orientée objet (outre l'économie en place).
+
+## ven 27 oct 2023 19:23:31 CEST
+res: (['h', 'b', 'c', 'f', 'g', 'a', 'd', 'e'], 17.055217217645314)
+res: (['d', 'g', 'f', 'h', 'a', 'c', 'e', 'b'], 17.026429561594338)
+

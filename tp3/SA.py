@@ -8,9 +8,9 @@ import attr
 
 @attr.s
 class EquilibrumRecord:
-    accepted_perturbations: int = attr.ib(default=0)
-    tentatives: int = attr.ib(default=0)
-    n: int = attr.ib(default=0)
+    accepted_perturbations: int = attr.ib(init=False, default=0)
+    tentatives: int = attr.ib(init=False, default=0)
+    n: int = attr.ib(init=True)
 
     def new_tentative(self):
         self.tentatives += 1
@@ -18,9 +18,13 @@ class EquilibrumRecord:
     def accepted(self):
         self.accepted_perturbations += 1
 
+    def reset(self):
+        self.accepted_perturbations = 0
+        self.tentatives = 0
+
 
 class EnergyRecord:
-    record: list[float] = [0]
+    record: list[float] = [0.001, 0.0011, 0.0012]
 
     def push(self, temperature):
         self.record.pop(0)
@@ -60,20 +64,19 @@ def generate_temperature(path: Path, get_energy: Callable) -> Temperature:
     return -(diff_path(path, get_energy))/np.log(0.5)  # apply natural logarithm
 
 
-def generate_frozen(get_energy):
+def generate_frozen(get_energy, equilibrum_record):
     energy_record = EnergyRecord()
 
     def delta_energy(new_path, old_path):
-        d_energy = get_energy(new_path) - get_energy(path)
+        d_energy = get_energy(new_path) - get_energy(old_path)
         energy_record.push(d_energy)
         return d_energy
 
     def frozen() -> bool:
         [x, y, z] = energy_record.get_record()
+        equilibrum_record.reset()
         return (x == y) and (y == z)
     return energy_record, frozen, delta_energy
-
-
 
 
 def update(path: Path) -> Path:
@@ -84,8 +87,8 @@ def metropolis_rule(energy: Energy, temperature: Temperature):
     return 1.0 if energy < 0 else np.exp((-energy)/temperature)
 
 
-def generate_acceptance():
-    record = EquilibrumRecord()
+def generate_acceptance(cities):
+    record = EquilibrumRecord(len(cities))
 
     def acceptance(old_path: Path, new_path: Path, temperature: float, energy: float):
         record.new_tentative()
@@ -122,17 +125,18 @@ def initial_functions(equilibrum_record, temperature_record):
 def simulated_annealing(file: TaskDefinitionFile) -> tuple[Path, int]:
     path, cities, get_energy = initial_configuration(file)
     temperature = initial_temperature(path, get_energy)
-    equilibrum_record, equilibrum, acceptance = generate_acceptance()
-    energy_record, frozen, delta_energy = generate_frozen(get_energy)
-    # while not frozen(temperature_record):
-    for i in range(5):
-        while not equilibrum():
-            print("equilibrum:", equilibrum_record)
-            print("temperature:", temperature)
-            new_path = update(path)  # random permutation
-            d_energy = delta_energy(new_path, path)
-            new_path = acceptance(path, new_path, temperature, d_energy)
-            temperature = 0.9 * temperature
+    equilibrum_record, equilibrum, acceptance = generate_acceptance(cities)
+    energy_record, frozen, delta_energy = generate_frozen(get_energy, equilibrum_record)
+    running = True
+    while running:
+        new_path = update(path)  # random permutation
+        d_energy = delta_energy(new_path, path)
+        new_path = acceptance(path, new_path, temperature, d_energy)
+        if equilibrum():
+            if frozen():
+                running = False
+            else:
+                temperature = 0.9 * temperature
     return path, get_energy(path)
 
 
