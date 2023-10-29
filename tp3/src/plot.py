@@ -1,8 +1,6 @@
-# Ploting module to display configurations
-from module import Path, Cities
+from src.module import Path, Cities
 import matplotlib.pyplot as plt
 import numpy as np
-from SA import initial_configuration
 
 
 def plot_path(path: Path, cities: Cities):
@@ -13,5 +11,6 @@ def plot_path(path: Path, cities: Cities):
 
 
 if __name__ == '__main__':
+    from SA import initial_configuration
     path, cities, get_energy = initial_configuration("data/simple_circle.dat")
     plot_path(path, cities)

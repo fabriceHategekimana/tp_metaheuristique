@@ -1,4 +1,4 @@
-from module import TaskDefinitionFile, Path, read_city, get_energy_generator, Temperature, Energy
+from src.module import TaskDefinitionFile, Path, read_city, get_energy_generator, Temperature, Energy
 from collections.abc import Callable
 import numpy as np
 import random

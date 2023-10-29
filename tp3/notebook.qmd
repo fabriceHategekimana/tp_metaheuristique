@@ -1,0 +1,61 @@
+# Series 3: Simulated Anneaaling for the traveling salesman problem
+
+## Introduction
+
+### Algorithmes
+
+J'ai implémenter les deux solution dans ces fichiers:
+
+- src/SA.py (for simulated annealing)
+- src/greedy.py (for the greedy method)
+
+TODO : faire un tableau
+
+### Données
+
+J'ai utilisé ces fiches de données:
+
+- src/data/simple_circle.dat
+- src/data/circle.dat
+- src/data/cities_tp3.dat
+- src/data/cities2_tp3.dat
+
+
+
+## Work to do
+
+I first started by doing the algorithm with `simple_circle`. 
+There are juste for cities in specific location ((0, 1), (1, 0), (0, -1), (-1 0)).
+
+
+
+```{python}
+from src.SA import simulated_annealing, read_city
+from src.plot import plot_path
+
+_ , cities = read_city("src/data/simple_circle.dat")
+path, length = simulated_annealing("src/data/simple_circle.dat") 
+
+length
+
+plot_path(path, cities)
+```
+
+I ran 10 times the SA algorithm. with `cities_tp3` one and `cities2_tp3`.
+
+```{python}
+
+SA_cities = [simulated_annealing("src/data/cities_tp3.dat") for i in range(10)]
+SA_cities2 = [simulated_annealing("src/data/cities_tp3.dat") for i in range(10)]
+```
+
+------
+
+## Some formula
+
+$$ x \in {1, 2, 3} $$
+
+```{python}
+7 + 7
+```
+
