@@ -24,6 +24,9 @@ J'ai utilisé ces fiches de données:
 
 ## Work to do
 
+## 4 cities in circle
+
+I created a configuration where the cities are in the perimeter of a circle of radius 1.
 I first started by doing the algorithm with `simple_circle`. 
 There are juste for cities in specific location ((0, 1), (1, 0), (0, -1), (-1 0)).
 
@@ -41,7 +44,30 @@ length
 plot_path(path, cities)
 ```
 
+As expected, we got a result where the solution follow the predicted pattern (The path will go arround the the cities that compose the circle).
+
+-----
+
+### 8 Cities in circle
+
+I tried it with a configuration containing 8 cities (this time, four cities are in diagonal).
+
+```{python}
+from src.SA import simulated_annealing, read_city
+from src.plot import plot_path
+
+_ , cities = read_city("src/data/circle.dat")
+path, length = simulated_annealing("src/data/circle.dat") 
+
+length
+
+plot_path(path, cities)
+```
+
+---
+
 I ran 10 times the SA algorithm. with `cities_tp3` one and `cities2_tp3`.
+
 
 ```{python}
 
@@ -58,4 +84,5 @@ $$ x \in {1, 2, 3} $$
 ```{python}
 7 + 7
 ```
+
 
