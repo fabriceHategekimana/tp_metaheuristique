@@ -9,11 +9,14 @@ import itertools
 
 def greedy(file: TaskDefinitionFile):
     path, cities = read_city(file)
-    permutations = list(itertools.permutations(path))
     get_energy = get_energy_generator(cities)
-    energies = [get_energy(p) for p in permutations]
-    new_path = permutations[np.argmin(energies)]
-    return new_path, get_energy(new_path)
+    energy = get_energy(path)
+    for ipath in itertools.permutations(path):
+        new_energy = min(energy, get_energy(ipath))
+        if new_energy == energy:
+            new_path = ipath
+            energy = new_energy
+    return new_path, new_energy
 
 
 if __name__ == '__main__':

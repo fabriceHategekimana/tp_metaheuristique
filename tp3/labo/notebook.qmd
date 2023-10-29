@@ -1,0 +1,40 @@
+# Series 3: Simulated Anneaaling for the traveling salesman problem
+
+## Introduction
+
+### Algorithmes
+
+J'ai implémenter les deux solution dans ces fichiers:
+
+- src/SA.py (for simulated annealing)
+- src/greedy.py (for the greedy method)
+
+TODO : faire un tableau
+
+### Données
+
+J'ai utilisé ces fiches de données:
+
+- src/data/simple_circle.dat
+- src/data/circle.dat
+- src/data/cities_tp3.dat
+- src/data/cities2_tp3.dat
+
+
+
+## Work to do
+
+```{python}
+	print("hello world")
+```
+
+------
+
+## Some formula
+
+$$ x \in {1, 2, 3} $$
+
+```{python}
+7 + 7
+```
+
