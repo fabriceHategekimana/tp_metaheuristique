@@ -4,7 +4,7 @@ start: clear
 	echo "Hello world!"
 
 test: clear
-	python3 tests.py
+	python3 src/tests.py
 
 command: clear
 	cat Makefile | grep ": FORCE" | sed "s/: FORCE//" | grep --invert-match "FORCE" 

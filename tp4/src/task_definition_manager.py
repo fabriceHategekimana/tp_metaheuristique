@@ -1,4 +1,6 @@
-from core import *
+from core import mymap, myfilter
+import pandas as pd
+import random
 
 
 def generate_task_definition_file(name, sample):
@@ -11,16 +13,8 @@ def generate_task_definition_file(name, sample):
     f.close()
 
 
-def open_file(filename):
+def open_file(filename: str) -> pd.DataFrame:
     '''
-    read .dat file and return a Dataframe(name, x, y)
-
-    Parameters:
-    -----------
-    filename
-
-    Returns:
-    --------
     data: name of the data :: DataFrame(name, x, y)
     '''
     text = get_text(filename)

@@ -1,4 +1,8 @@
-from task_definition_manager import *
+from task_definition_manager import get_cities
+from core import mymap
+import pandas as pd
+import numpy as np
+import random
 
 
 def cross_product(list_of_value):
@@ -19,10 +23,10 @@ def compute_distance(setting, c1, c2):
     return np.linalg.norm(coords2-coords1)
 
 
-# compute distances between all points, and store into a dataframe
 def compute_distances(setting):
     '''
-    compute the distances between all points of a setting (coordinates of cities)
+    compute the distances
+    between all points of a setting (coordinates of cities)
 
     Parameters:
     -----------
@@ -30,16 +34,19 @@ def compute_distances(setting):
 
     Returns:
     --------
-    dist : a dataframe of distances between all points (c1, c2) in the setting (c1, c2, distance)
+    dist : a dataframe of distances between all points (c1, c2)
+    in the setting (c1, c2, distance)
     '''
     cities = get_cities(setting)
     couples_of_cities = cross_product(cities)
-    c1_c2_distances = mymap(lambda c: compute_distance(setting, c[0], c[1]), couples_of_cities)
-    dataframe = {"c1": couples_of_cities[:,0], "c2": couples_of_cities[:,1], "distance": c1_c2_distances}
+    c1_c2_distances = mymap(lambda c: compute_distance(setting, c[0], c[1]),
+                            couples_of_cities)
+    dataframe = {"c1": couples_of_cities[:, 0], "c2": couples_of_cities[:, 1],
+                 "distance": c1_c2_distances}
     return pd.DataFrame(dataframe)
 
 
-# compute fitness by computing length of the path    
+# compute fitness by computing length of the path
 def compute_fitness(combination, dist):
     '''
     compute path length of a combination (of cities)
@@ -54,7 +61,9 @@ def compute_fitness(combination, dist):
     fitness : path length
     '''
     combination_extended = combination.copy() + [combination[0]]
-    couples = mymap(lambda i: [combination_extended[i], combination_extended[i+1]], range(len(combination_extended)-1))
+    couples = mymap(lambda i: [combination_extended[i],
+                               combination_extended[i+1]],
+                    range(len(combination_extended)-1))
     distances = mymap(lambda c: get_distance(dist, c[0], c[1]), couples)
     return np.sum(distances)
 
@@ -71,35 +80,18 @@ def tau(T, i, j):
     return get_pheromone(T, i, j)
 
 
-# compute the probability of choosing a next city from unvisited cities
 def prob_to_city(i, j, J, dist, T, alpha, beta):
-    '''
-    compute the probability of moving from city i to city j (j belongs to J)
-
-    Parameters:
-    -----------
-    i : current city
-    j : city belonging to J 
-    J : list of unvisited cities
-    dist : a dataframe of distances between all points (c1, c2) in the setting
-    T : dataframe of pheremone quantities between points (c1, c2)
-    alpha : parameter that controls the relative importance of the pheromone
-    beta : parameter that controls the relative importance of the heuristic information η_ij
-
-    Returns:
-    --------
-    p : probability to go to city j from city i
-    '''
+    '''compute the probability of moving from city i to city j (j belongs to J)'''
     if j in J:
-       up = (tau(T,i,j))**alpha * (eta(dist,i,j))**beta
-       down = sum(mymap(lambda l: tau(T,i,l)**alpha * (eta(i,l)**beta), J))
-       return up/down
+        up = (tau(T, i, j))**alpha * (eta(dist, i, j))**beta
+        down = sum(
+                mymap(lambda la: tau(T, i, la)**alpha * (eta(i, la)**beta), J))
+        return up/down
     else:
-       return 0
+        return 0
 
 
-# path of each individual ant (run later in parallel, independent at each time t)
-def ant_path(setting, dist, T, alpha, beta):
+def ant_path(setting, dist, T, alpha, beta, J):
     # TODO
     '''
     path of each individual ant (out of m ants)
@@ -126,7 +118,10 @@ def ant_path(setting, dist, T, alpha, beta):
     explored = [city]
     while len(cities) > 0:
         coords = mymap(lambda c: get_coordinates(setting, c), cities)
-        probabilities = mymap(lambda c: prob_to_city(city, c, J, dist, explored, alpha, beta), cities)
+        probabilities = mymap(lambda c: prob_to_city(city, c, J,
+                                                     dist, explored,
+                                                     alpha, beta), cities)
         r = random.random()
         # select the one with higher probability
         # update explored and cities before iterating
+    return coords, probabilities, r
