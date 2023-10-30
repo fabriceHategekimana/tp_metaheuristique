@@ -2,18 +2,22 @@
 
 ## Introduction
 
-### Algorithmes
+### Algorithms
 
-J'ai implémenter les deux solution dans ces fichiers:
+I implemented both solutions in these files:
 
 - src/SA.py (for simulated annealing)
 - src/greedy.py (for the greedy method)
 
-TODO : faire un tableau
+I also implemented other help files for organization and analysis:
 
-### Données
+- configuration_generator.py
+- module.py
+- plot.py
 
-J'ai utilisé ces fiches de données:
+### Datas
+
+I used these datasheets:
 
 - src/data/simple_circle.dat
 - src/data/circle.dat
@@ -21,15 +25,13 @@ J'ai utilisé ces fiches de données:
 - src/data/cities2_tp3.dat
 
 
-
 ## Work to do
 
 ## 4 cities in circle
 
 I created a configuration where the cities are in the perimeter of a circle of radius 1.
-I first started by doing the algorithm with `simple_circle`. 
+I first started by doing the algorithm with `src/data/simple_circle.dat`. 
 There are juste for cities in specific location ((0, 1), (1, 0), (0, -1), (-1 0)).
-
 
 
 ```{python}
@@ -50,7 +52,7 @@ As expected, we got a result where the solution follow the predicted pattern (Th
 
 ### 8 Cities in circle
 
-I tried it with a configuration containing 8 cities (this time, four cities are in diagonal).
+I tried it with a configuration containing 8 cities `src/data/circle.dat` (this time, four cities are in the diagonals).
 
 ```{python}
 from src.SA import simulated_annealing, read_city
@@ -66,23 +68,57 @@ plot_path(path, cities)
 
 ---
 
-I ran 10 times the SA algorithm. with `cities_tp3` one and `cities2_tp3`.
+I tried to run 10 times the SA algorithm. with `cities_tp3` one and `cities2_tp3`.
+But it took longer than I thought to do so (It take more that 12 hours and since I started sunday, it isn't finished yet).
 
+I first implemented a function that measure the time to compute each algorithm (it's the `src/timer.dat` file)
 
 ```{python}
+from src.SA import simulated_annealing, read_city
+from src.plot import plot_path
+from src.timer import timer
 
-SA_cities = [simulated_annealing("src/data/cities_tp3.dat") for i in range(10)]
-SA_cities2 = [simulated_annealing("src/data/cities_tp3.dat") for i in range(10)]
+timed_SA = timer(simulated_annealing)
+
+SA_cities = [timed_SA("src/data/cities_tp3.dat") for i in range(10)]
+SA_cities2 = [timed_SA("src/data/cities_tp3.dat") for i in range(10)]
+
+cities_path = [c[0] for c in SA_cities]
+cities_length = [c[1] for c in SA_cities]
+cities2_path = [c[0] for c in SA_cities2]
+cities2_length = [c[1] for c in SA_cities2]
 ```
+
+I also tried to run one time the greedy algorithm for `cities_tp3`. I started this friday since I knew it will take some times. But unfortunately, it also take hours to finish (not finished yet).
 
 ------
 
-## Some formula
+## Working with a smaller set
 
-$$ x \in {1, 2, 3} $$
+I decided to work with a randomly generated cities of 10 members.
 
 ```{python}
-7 + 7
+from src.SA import simulated_annealing, read_city
+from src.plot import plot_path
+from src.configuration_generator import generate_configuration
+from src.timer import timer
+import pandas as pd
+
+timed_SA = timer(simulated_annealing)
+
+generate_configuration("Exemple", 10)
+SA_exemple = [timed_SA("Exemple.dat") for i in range(10)]
+
+cities_path = [c[0] for c in SA_exemple]
+cities_length = [c[1] for c in SA_exemple]
+cities_time = [c[1] for c in SA_exemple]
+
+df = pandas.pd([cities_path, cities_length, cities_time], columns=["path", "length", "time"])
+df.to_csv("csv/random_cities")
 ```
+
+## Practical consideration
+
+I didn't have the time to plot some graphs since the computation took too long.
 
 

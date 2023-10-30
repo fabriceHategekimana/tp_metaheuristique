@@ -129,7 +129,7 @@ def simulated_annealing(file: TaskDefinitionFile) -> tuple[Path, int]:
     energy_record, frozen, delta_energy = generate_frozen(get_energy, equilibrum_record)
     running = True
     while running:
-        new_path = update(path) 
+        new_path = update(path)
         d_energy = delta_energy(new_path, path)
         new_path = acceptance(path, new_path, temperature, d_energy)
         if equilibrum():

@@ -6,4 +6,7 @@ run: VOID
 plot: VOID
 	python3 playground.py
 
+zip: VOID
+	zip -r TP3_SA_Fabrice_HATEGEKIMANA notebook.ipynb src Makefile
+
 VOID:
