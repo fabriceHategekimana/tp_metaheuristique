@@ -1,8 +1,8 @@
 import unittest
 import numpy as np
-from module import (get_coordinates,
-                    cross_product, compute_distances,
-                    get_distance, compute_fitness)
+from module import (get_coordinates, cross_product,
+                    compute_distances, get_distance,
+                    compute_fitness, prob_to_city)
 from task_definition_manager import open_file
 from greedy import greedy
 
@@ -52,6 +52,13 @@ class AS_test(unittest.TestCase):
         message = "The algorithm shouldn't return a empty list"
         res = greedy(self.file_name)
         self.assertTrue(len(res) > 0, message)
+
+    def test_prob_to_city(self):
+        '''Test prob_to_city'''
+        df = open_file(self.file_name)
+        distances = compute_distances(df)
+        prob = prob_to_city("a", "b", ["c", "d"], distances, distances, 1, 1)
+        self.assertTrue(prob is not None)
 
 
 if __name__ == '__main__':

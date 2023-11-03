@@ -1,22 +1,13 @@
-from core import mymap, myfilter
 import pandas as pd
-import random
+from core import mymap, myfilter
 
 
-def generate_task_definition_file(name, sample):
-    f = open(name, "a")
-    for i in range(1, sample+1):
-        if i < sample:
-            f.write(f"c{i} {random.random()} {random.random()}\n")
-        else:
-            f.write(f"c{i} {random.random()} {random.random()}")
-    f.close()
+def remove_blank_line(triplet):
+    return myfilter(lambda x: x != '', triplet)
 
 
-def open_file(filename: str) -> pd.DataFrame:
-    '''
-    data: name of the data :: DataFrame(name, x, y)
-    '''
+def open_file(filename):
+    ''' data: name of the data :: DataFrame(name, x, y)'''
     text = get_text(filename)
     array_2D = mymap(lambda x: format_cities_columns(x), text)
     df = pd.DataFrame(array_2D, columns=["name", "x", "y"])
@@ -38,9 +29,12 @@ def format_cities_columns(string_triplet):
     return [triplet[0], float(triplet[1]), float(triplet[2])]
 
 
-def remove_blank_line(triplet):
-    return myfilter(lambda x: x != '', triplet)
-
-
 def get_cities(df):
     return list(df["name"])
+
+
+def save_file(data, file_name):
+    with open(f"{file_name}.dat", "w") as file:
+        for name, x, y in zip(data["name"], data["x"], data["y"]):
+            line = f"{name} {x} {y}"
+            file.write(line)

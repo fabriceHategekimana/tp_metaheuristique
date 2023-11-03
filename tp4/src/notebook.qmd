@@ -1,0 +1,83 @@
+# TP4 part 1
+
+# Work to do
+
+## Function to import data
+
+```{python}
+from task_definition_manager import open_file
+
+data = open_file("data/cities.dat")
+
+data
+```
+
+-------------
+
+## Function to save data
+
+```{python}
+from task_definition_manager import save_file
+
+save_file(data, "data/saved.dat")
+```
+
+-------------
+
+## Function to compute the point-point distance
+
+```{python}
+from module import compute_distances, get_distance
+
+distances = compute_distances(data)
+distance = get_distance(distances, "a", "b")
+
+distance
+```
+
+-------------
+
+## Function to compute the fitness
+
+```{python}
+from module import compute_fitness
+
+length = compute_fitness(["a", "b"], distances)
+
+length
+```
+
+-------------
+
+## Function to get the probability to go to city j from i
+
+```{python}
+from module import prob_to_city
+probability = prob_to_city("a", "b", ["c", "d"], distances, distances, 1, 1)
+
+probability
+```
+
+-------------
+
+## Function to perform the greedy algorithm
+
+```{python}
+from greedy import greedy
+
+res = greedy("data/cities.dat")
+
+res
+```
+
+-------------
+
+## Function to get the individual ant path
+
+```{python}
+from module import ant_path 
+
+res = ant_path(data, distances, distances, 1, 1, ["a", "b", "c"])
+```
+
+-------------

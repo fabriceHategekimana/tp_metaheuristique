@@ -1,16 +1,16 @@
-all:start
+all:hello
 
-start: clear
+hello: clear
 	echo "Hello world!"
 
 test: clear
 	python3 src/tests.py
 
-command: clear
-	cat Makefile | grep ": FORCE" | sed "s/: FORCE//" | grep --invert-match "FORCE" 
+zip: clear
+	zip -r TP4_AS_Fabrice_Hategekimana Makefile src 
 
-commands: clear
-	cat Makefile | grep ": FORCE" | sed "s/: FORCE//" | grep --invert-match "FORCE" 
+deploy: zip
+	cp -f TP4_AS_Fabrice_Hategekimana.zip /home/fabrice/rendu 
 
 clear: FORCE
 	clear
