@@ -25,6 +25,7 @@ def find_AS(setting, g_fitness, dist, tmax, ants, alpha, beta):
     NOTE : the function ant_path can be parallelized, since at each iteration, ants are independent
     '''
 
+
 # plot the path of a combination
 def plot_path(combination, setting, title, filename):
     '''
@@ -59,7 +60,8 @@ def plot_path(combination, setting, title, filename):
     plt.axis("off")
     plt.savefig(filename)
     plt.show()
-    
+
+
 # plot box_plot for statistics    
 def box_plot(setting, methods, results):
     '''
@@ -82,6 +84,7 @@ def box_plot(setting, methods, results):
     plt.savefig(f'Fitness Distribution for {len(setting)} cities')
     plt.show(fig)
     plt.close(fig)
+
 
 def compare_methods(setting, tmax=??, ants=??, alpha=??, beta=??, filename=None):
     # TODO (Some Parts)
@@ -174,6 +177,7 @@ def compare_methods(setting, tmax=??, ants=??, alpha=??, beta=??, filename=None)
     plot_path(min_greedy_path, setting, 'Greedy', f"path_greedy_{len(setting)}.png")
     plot_path(min_as_path, setting, 'AS', f"path_AS_{len(setting)}_{tmax}_{ants}_{alpha}_{beta}.png")
 
+
 def compare_AS_tmax(setting, dist, g_fitness, ants=??, alpha=??, beta=??):
     # TODO (Some Parts)
     '''
@@ -211,6 +215,7 @@ def compare_AS_tmax(setting, dist, g_fitness, ants=??, alpha=??, beta=??):
     plt.ylabel("Execution Time")
     plt.savefig("Time-Tmax.png")
     plt.show()
+
 
 def compare_AS_ants(setting, dist, g_fitness, tmax=??, alpha=??, beta=??):
     '''
