@@ -49,3 +49,8 @@ Answer the following Questions:
     A:
 
 
+# Check boundary condition & decide what to do if a particle crosses a
+# boundary, some options are:
+	# set crossing position to the boundary position
+	# reflect crossing position
+	# bounce-back crossing position

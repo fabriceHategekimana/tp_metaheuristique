@@ -3,20 +3,25 @@ import numpy as np
 
 Matrice = list[list[float]]
 
+
 def open_data(file_name: str) -> Matrice:
     with open(file_name, newline="") as f:
         data = list(csv.reader(f, quoting=csv.QUOTE_NONNUMERIC))
-    return data
+    return [[float(element) for element in sub_list] for sub_list in data]
 
 
 def open_X_Y(x_file: str, y_file: str) -> tuple[Matrice, Matrice]:
-    return tuple([opend_data(f) for f in [x_file, y_file]])
+    return tuple([open_data(f) for f in [x_file, y_file]])
 
 
-# 2D array of shape (200, 400), each row (image) contains the 400 grey values of each image
+X_dat, Y_dat = open_X_Y("X.dat", "Y.dat")
+
+# 2D array of shape (200, 400),
+# each row (image) contains the 400 grey values of each image
 X = np.array(X_dat).reshape(200, 400)
 
-# list of 200 labels, label for each image, 1 if image is "2" and 0 if image is "3"
+# list of 200 labels, label for each image,
+# 1 if image is "2" and 0 if image is "3"
 y_k = [y[0] for y in Y_dat]
 
 
@@ -38,7 +43,6 @@ def checkEqual(lst):
 
 
 def fun_sigmoid(x):
-    # TODO
     """
     compute sigmoid of value x
 
@@ -56,16 +60,19 @@ def fun_sigmoid(x):
 # Calculate h-w1-w2
 def h12(pso, X):
     """
-    Valculate state of activation of the output layer of neurons (list of 200 values, a value for each image)
+    Valculate state of activation of the output layer
+        of neurons (list of 200 values, a value for each image)
 
     Parameters:
     -----------
     pso : position vector of one particle
-    X : 2D array of shape (200, 400), each row (image) contains the 400 grey values of each image
+    X : 2D array of shape (200, 400),
+        each row (image) contains the 400 grey values of each image
 
     Returns:
     --------
-    h : list of 200 values representing the state of activation of the output layer of neurons
+    h : list of 200 values representing the state of
+        activation of the output layer of neurons
     """
     # w2 matrix, (1, 26) of last 26 elements of pso
     w2 = np.array(pso[-26:])
@@ -83,7 +90,8 @@ def h12(pso, X):
         image.insert(0, 1)
         # reshape
         image = np.array(image)
-        # calculate c = matrix multiplication of weight matrix 1 and image vector(with 1 at position 0)
+        # calculate c = matrix multiplication of weight matrix 1 and
+        # image vector(with 1 at position 0)
         res1 = w1.dot(image)
         # apply sigmoidal function on elements of c
         res1 = fun_sigmoid(res1)
@@ -91,8 +99,9 @@ def h12(pso, X):
         res1 = list(res1).insert(0, 1)
         # reshape
         res1 = np.array(res1)
-        # calculate matrix multiplication of weight matrix 2 and vector z(with 1 at position 0), answer is scalar
-        res2 = w1.dot(image)
+        # calculate matrix multiplication of weight matrix 2 and vector z
+        # (with 1 at position 0), answer is scalar
+        res2 = w2.dot(image)
         # apply sigmoidal function on answer
         res2 = fun_sigmoid(res1)
         # results, append all h12 for all images
@@ -108,7 +117,8 @@ def calculate_J(h, y_k):
 
     Parameters:
     -----------
-    h : list of 200 values representing the state of activation of the output layer of neurons
+    h : list of 200 values representing the state of
+        activation of the output layer of neurons
     y_k : list of 200 labels "1" or "0", for each image
 
     Returns:
@@ -126,8 +136,10 @@ def pred_acc(h, X, y_k):
 
     Parameters:
     -----------
-    h : list of 200 values representing the state of activation of the output layer of neurons (to be used for best h12)
-    X : 2D array of shape (200, 400), each row (image) contains the 400 grey values of each image
+    h : list of 200 values representing the state of
+        activation of the output layer of neurons (to be used for best h12)
+    X : 2D array of shape (200, 400),
+        each row (image) contains the 400 grey values of each image
     y_k : list of 200 labels "1" or "0", for each image
 
     Returns:
@@ -135,20 +147,24 @@ def pred_acc(h, X, y_k):
     acc : prediction accuracy
     """
 
-    # TODO find how to use h
-
     # get predicted labels
     y_pred = np.vectorize(lambda x: 1 if x >= 0.5 else 0)(h12(X))
     # get prediction accuracy (%)
-    # TODO
+    correct_pred = np.sum(y_pred == y_k)
+    # Calcul du pourcentage de précision
+    precision = (correct_pred / len(y_k)) * 100.0
+    return precision
 
 
-def number_of_iteration(tmax):
-    i = 0
-    def counter():
-        i += 1
-        return i <= tmax
-    return counter
+def incrementer_generator(max_num):
+    nombre = 0
+
+    def incrementer():
+        nonlocal nombre
+        nombre += 1
+        return True if nombre >= max_num+1 else False
+
+    return incrementer
 
 
 def counter_generator(i: int):
@@ -177,11 +193,11 @@ def pso_NN(X, y_k, N, vmax_coeff):
 
     Returns:
     --------
-    J_g : global best fitness
-    b_g : global best position
-    h_g : global best state activation of
+    J_global : global best fitness
+    b_global : global best position
+    h12_min : global best state activation of
         output neurons (needed later for prediction)
-    J_global : list of all global best positions
+    J_local : list of all global best positions
         (for each iteration, needed to plot later on)
     """
     # Fixed Parameters
@@ -197,7 +213,7 @@ def pso_NN(X, y_k, N, vmax_coeff):
     # coordinates" range
     c_range = [-1, 1]  # or [-0.5, 0.5]
     # velocity threshold vmax = vmax_coeff*(c_max - c_min)
-    vmax = vmax_coeff*(c_range[0] - c_range[1])
+    vmax = vmax_coeff*(c_range[1] - c_range[0])
 
     # NOTE : STOPPING CONDITION
     # choose one of these two stopping conditions:
@@ -221,40 +237,47 @@ def pso_NN(X, y_k, N, vmax_coeff):
     J = np.apply_along_axis(lambda hi: calculate_J(hi, y_k), axis=1, arr=h)
     # get minimum J, and idx (index of minimum)
     J_min, idx = np.min(J), np.argmin(J)
-    # set local & global J (local J is best J for each particle, global J is best overall J)
+    # set local & global J
+    # (local J is best J for each particle, global J is best overall J)
     J_local = J
     J_global = J_min
     # set local & global positions
-    # (local position is best b for each particle, global position is best overall b)
-    b_local = None
-    b_global = None
+    # (local position is best b for each particle,
+    # global position is best overall b)
+    b_local = s
+    b_global = s[idx]
     # save minimum h12
     h12_min = np.min(h)
 
     # Run algorithm
 
     # STOPPING CONDITION
-    still_counting = counter_generator(10)
+    still_counting = incrementer_generator(10)
     while still_counting():
         # For every particle position in s:
-        for particle in particles:
-            # r1, r2 random numbers between 0 & 1
-            [r1, r2] = np.random.random((2))
-            # Update v
-            v = w*v + c1*r1*(b-s) + c2*r2*(b_g-s)
-            # Check velocity if crossing upper/lower threshold
-            v = crossing_upper_lower_threshold(v)
-            # Update position
-            s = s + v
-            # Check boundary condition & decide what to do if a particle crosses a boundary, some options are:
-                # set crossing position to the boundary position
-                # reflect crossing position
-                # bounce-back crossing position
-            crossing_position = set_crossing_position(s)
-            # Calculate new J (by first calculating h12)
-            J = calculate_J(h, y_k)
-            # Check if found new best fitness, set to local fitness
+        # r1, r2 random numbers between 0 & 1
+        [r1, r2] = np.random.random((2))
+        # Update v
+        v = w*v + c1*r1*(b_local-s) + c2*r2*(b_global-s)
+        # Check velocity if crossing upper/lower threshold
+        v = np.min([v, vmax])
+        # Update position
+        s = s + v
+        # crossing_position = set_crossing_position(s)
+        # Calculate new J (by first calculating h12)
+        h_new = np.apply_along_axis(lambda pso: h12(pso, X),
+                                    axis=1, arr=s)
+        J_new = np.apply_along_axis(lambda hi: calculate_J(hi, y_k),
+                                    axis=1, arr=h)
+        # Check if found new best fitness, set to local fitness
+        J_local = np.apply_along_axis(lambda old, new: min(old, new),
+                                      axis=0, arr=np.array(J, J_new))
         # Get minimum of all new best J, if best is < global J, set to global J
+        J_min, idx = np.min(J_local), np.argmin(J_local)
+        J_global = J_min
+        b_local = s
+        b_global = s[idx]
         # save best h12
+        h12_min = np.min(h_new)
         # Update if Stopping Condition #2
-    return J_g, b_g, h_g, J_global
+    return J_global, b_global, h12_min, J_local
