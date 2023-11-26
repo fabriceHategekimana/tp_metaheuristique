@@ -1,28 +1,15 @@
 import csv
 import numpy as np
 
-Matrice = list[list[float]]
 
-
-def open_data(file_name: str) -> Matrice:
+def open_data(file_name):
     with open(file_name, newline="") as f:
         data = list(csv.reader(f, quoting=csv.QUOTE_NONNUMERIC))
     return [[float(element) for element in sub_list] for sub_list in data]
 
 
-def open_X_Y(x_file: str, y_file: str) -> tuple[Matrice, Matrice]:
+def open_X_Y(x_file, y_file):
     return tuple([open_data(f) for f in [x_file, y_file]])
-
-
-X_dat, Y_dat = open_X_Y("X.dat", "Y.dat")
-
-# 2D array of shape (200, 400),
-# each row (image) contains the 400 grey values of each image
-X = np.array(X_dat).reshape(200, 400)
-
-# list of 200 labels, label for each image,
-# 1 if image is "2" and 0 if image is "3"
-y_k = [y[0] for y in Y_dat]
 
 
 # Checks if all elements of a list are equal
@@ -85,7 +72,7 @@ def h12(pso, X):
     # for every image x
     for x in X:
         # get image (& copy !!)
-        image = x.copy()
+        image = list(x.copy())
         # add 1 at 0-position
         image.insert(0, 1)
         # reshape
@@ -96,16 +83,17 @@ def h12(pso, X):
         # apply sigmoidal function on elements of c
         res1 = fun_sigmoid(res1)
         # add 1 at 0-position
-        res1 = list(res1).insert(0, 1)
+        res1 = list(res1)
+        res1.insert(0, 1)
         # reshape
         res1 = np.array(res1)
         # calculate matrix multiplication of weight matrix 2 and vector z
         # (with 1 at position 0), answer is scalar
-        res2 = w2.dot(image)
+        res2 = w2.dot(res1)
         # apply sigmoidal function on answer
-        res2 = fun_sigmoid(res1)
+        res2 = fun_sigmoid(res2)
         # results, append all h12 for all images
-        results.append(list(res2))
+        results.append(res2)
 
     return results
 
@@ -148,12 +136,11 @@ def pred_acc(h, X, y_k):
     """
 
     # get predicted labels
-    y_pred = np.vectorize(lambda x: 1 if x >= 0.5 else 0)(h12(X))
+    y_pred = np.vectorize(lambda x: 1 if x >= 0.5 else 0)(h)
     # get prediction accuracy (%)
     correct_pred = np.sum(y_pred == y_k)
     # Calcul du pourcentage de précision
-    precision = (correct_pred / len(y_k)) * 100.0
-    return precision
+    return (correct_pred / len(y_k)) * 100.0
 
 
 def incrementer_generator(max_num):
@@ -177,7 +164,7 @@ def counter_generator(i: int):
 
 
 # Algorithm, and training the network
-def pso_NN(X, y_k, N, vmax_coeff):
+def pso_NN(X, y_k, N, vmax_coeff, nb_iteration=10):
     """
     perfom PSO algorithm with NN training
 
@@ -252,7 +239,7 @@ def pso_NN(X, y_k, N, vmax_coeff):
     # Run algorithm
 
     # STOPPING CONDITION
-    still_counting = incrementer_generator(10)
+    still_counting = incrementer_generator(nb_iteration)
     while still_counting():
         # For every particle position in s:
         # r1, r2 random numbers between 0 & 1
@@ -278,6 +265,6 @@ def pso_NN(X, y_k, N, vmax_coeff):
         b_local = s
         b_global = s[idx]
         # save best h12
-        h12_min = np.min(h_new)
+        h12_min = np.min(h_new)  # peut-être checker la validité
         # Update if Stopping Condition #2
     return J_global, b_global, h12_min, J_local
