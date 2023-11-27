@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import random
@@ -10,16 +11,16 @@ def f(x, y):
     return - first - second
 
 
-def to_decimal_h(binary_string):
+def to_decimal(binary_string):
     if len(binary_string) != 10:
         raise ValueError("La chaîne doit avoir une longueur de 10.")
     return int(binary_string, 2)
 
 
-def to_decimal(binary_string):
+def mapping(binary_string):
     if len(binary_string) != 20:
         raise ValueError("La chaîne doit avoir une longueur de 20.")
-    return to_decimal_h(binary_string[:10]), to_decimal_h(binary_string[10:])
+    return to_decimal(binary_string[:10]), to_decimal(binary_string[10:])
 
 
 def to_10bits(n):
@@ -38,13 +39,9 @@ def initial_values(size):
     return np.random.choice([0, 1], size=size)
 
 
-def mapping(a, b):
-    # m number of bits of the sequence
-    return lambda x: (x/(2 ** len(x))) * (b-a) + a
-
-
-def compute_fitness(x):
-    return 1
+def compute_fitness(individual):
+    x, y = mapping(individual)
+    return f(x, y)
 
 
 def crossover(row):
@@ -101,9 +98,13 @@ def tournament5(i):
     return fun
 
 
+def generate_individuals(N, size):
+    return pd.DataFrame([initial_values(size).__str__() for i in range(N)],
+                        columns=["individual"])
+
+
 def genetic_algorithm(N, size, G):
-    df = pd.DataFrame([initial_values(size).__str__() for i in range(N)],
-                      columns=["individual"])
+    df = generate_individuals(N, size)
     for i in range(G):
         df["fitness"] = df["individual"].apply(compute_fitness)
         mates = get_mate(selection(df, tournament5(N//2)))
@@ -112,6 +113,23 @@ def genetic_algorithm(N, size, G):
         df = pd.DataFrame((df["individual1"] + df["individual2"])
                           .apply(mutation), columns=["individual"])
     return df
+
+
+def visualize(f, interval, points=100):
+    x = np.linspace(interval[0], interval[1], points)
+    y = np.linspace(interval[0], interval[1], points)
+    x, y = np.meshgrid(x, y)
+    z = f(x, y)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.plot_surface(x, y, z, cmap='viridis')
+
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+
+    plt.show()
 
 
 if __name__ == '__main__':
