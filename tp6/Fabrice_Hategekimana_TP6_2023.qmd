@@ -1,0 +1,80 @@
+---
+title: Genetic algorithms and function minimization
+author: Fabrice Hategekimana
+---
+
+
+## GA algorithm
+
+Experiment GA algorithm for all combinations of the following cases:
+
+	- p_m = 0.01 or p_m = 0.1
+	- no crossover or crossover with p_c = 0.6 (4 cases in total)
+
+For each of the 4 cases, run with/out keeping track of best -> (8 cases in total)
+
+In all cases: N=100, k=20
+
+```{python}
+from app import GA, fxy
+from itertools import product
+
+# population size
+N = 100
+# individual bit string
+k = 20
+### Run GA for all above cases 10 times
+
+p_ms = [0.01, 0.1]
+crossovers = [False, True]
+
+cases = list(product(p_m, crossover))
+
+res = GA(N=N, k=k, p_c=0.6, p_m=0, evals=100, crossOver=True, track_best=True, f=fxy)
+
+df, g_fitness, fit_best, probs, probs1, probs2p5 = res
+
+df
+```
+
+## Statistics: 
+Get best, mean, standard deviation for each of the following 4 cases (no track of best) at 10^3, 10^4, & 10^5 fitness evaluations:
+
+1. p_m = 0.01 & no crossover  
+2. p_m = 0.01 & p_c = 0.6  
+3. p_m = 0.1 & no crossover  
+4. p_m = 0.1 & p_c = 0.6  
+
+Print the statistics nicely (you can use pandas dataframe for eg.)
+Results are 4 tables of 9 values each
+
+### Comment on your results (effect of mutation/crossover)
+
+Plot the cumulative empirical probabilities (probabilities vs. fitness evaluations) for all 4 cases for:
+
+1. optimum
+2. 1% away from optimum
+3. 2.5% away from optimum
+
+All 3 cases are plotted with/out keeping track of best
+
+We expect 6 figures at the end, with each figure having all 4 combinations of crossover & mutation on the same plot
+
+### Comment on your results (observation, difference between keeping track or not...)
+
+
+#### Answer the following Questions: 
+
+1. Q: What is the Search Space of our problem?
+
+   A: The search space of our problem is the set of couple (x, y) contained in the interval x,y \in [10, 1000].
+
+
+2. Q: What are the roles of Selection, Crossover, & Mutation processes?
+
+   A: The Selection play the role of optimizing the fitness since it select the next generation according to the best fitness. But with the selection only, we dont have the power to explore for more diversity. The Crossover and Mutation processes add some variance to the set of individuals but keep in the same time the probability of the new individuals generated to stay in the subset of the best elements (from the selection step).
+    
+
+3. Q: What does each of the 3 processes Selection, Crossover & Mutation favor : exploration/diversification or exploitation/intensification?
+
+   A: The Selection is there for the exploitation but the Crossover and mutation are there for the diversification (exploration).
