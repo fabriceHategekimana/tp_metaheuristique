@@ -11,59 +11,62 @@ class CPU:
         while len(self.pile) > 0:
             self.pile.pop()
 
+    def push(self, val):
+        self.pile.append(val)
+
+    def pop(self):
+        return self.pile.pop() if len(self.pile) > 0 else None
+
 
 # These are the instructions
 def AND(cpu, data):
-    # TO DO
-    pass
+    v1 = cpu.pop()
+    v2 = cpu.pop()
+    cpu.push(v1 and v2)
 
 
 def OR(cpu, data):
-    # TO DO
-    pass
+    v1 = cpu.pop()
+    v2 = cpu.pop()
+    cpu.push(v1 or v2)
 
 
 def XOR(cpu, data):
-    # TO DO
-    pass
+    v1 = cpu.pop()
+    v2 = cpu.pop()
+    cpu.push((v1 and v2) or (not (v1 or v2)))
 
 
 def NOT(cpu, data):
-    # TO DO
-    pass
+    v = cpu.pop()
+    cpu.push(not v)
 
 
 # Push values of variables on the stack.
 def X1(cpu, data):
-    # TO DO
-    pass
+    cpu.push(data[0])
 
 
 def X2(cpu, data):
-    # TO DO
-    pass
+    cpu.push(data[1])
 
 
 def X3(cpu, data):
-    # TO DO
-    pass
+    cpu.push(data[2])
 
 
 def X4(cpu, data):
-    # TO DO
-    pass
+    cpu.push(data[3])
 
 
 # Execute a program
 def execute(program, cpu, data):
-    # TO DO
     pass
 
 
 # Generate a random program
 def randomProg(length, functionSet, terminalSet):
-    # TO DO
-    pass
+    return [random.choice(functionSet+terminalSet) for i in range(length)]
 
 
 # Computes the fitness of a program.
@@ -129,6 +132,9 @@ def mutation(Population, p_m, terminalSet, functionSet):
     return newPopulation
 
 
+calls = {"AND": AND, "OR": OR, "XOR": XOR, "NOT": NOT,
+         "X1": X1, "X2": X2, "X3": X3, "X4": X4}
+
 # -------------------------------------
 
 # LOOK-UP TABLE YOU HAVE TO REPRODUCE.
@@ -152,8 +158,6 @@ dataSet = [
     [1, 1, 1, 1, 0],
 ]
 
-print(dataSet)
-
 cpu = CPU()
 
 # Function and terminal sets.
@@ -164,6 +168,7 @@ terminalSet = ["X1", "X2", "X3", "X4"]
 prog = ["X1", "X2", "AND", "X3", "OR"]
 progLength = 5
 prog = randomProg(progLength, functionSet, terminalSet)
+
 print(prog)
 
 # Execute a program on one row of the data set.
@@ -172,11 +177,11 @@ output = execute(prog, cpu, data)
 print(output)
 print("-------------")
 
-# Parameters
-popSize = None  # TODO
-p_c = None  # TODO
-p_m = None  # TODO
-
-# Generate the initial population
-
-# Evolution. Loop on the creation of population at generation i+1 from population at generation i, through selection, crossover and mutation.
+# # Parameters
+# popSize = None  # TODO
+# p_c = None  # TODO
+# p_m = None  # TODO
+# 
+# # Generate the initial population
+# 
+# # Evolution. Loop on the creation of population at generation i+1 from population at generation i, through selection, crossover and mutation.
