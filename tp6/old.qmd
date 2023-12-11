@@ -17,6 +17,39 @@ For each of the 4 cases, run with/out keeping track of best -> (8 cases in total
 
 In all cases: N=100, k=20
 
+```{python}
+from app import GA, fxy
+from itertools import product
+import pandas as pd
+
+# population size
+N = 100
+# individual bit string
+k = 20
+### Run GA for all above cases 10 times
+
+p_ms = [0.01, 0.1]
+crossovers = [False, True]
+evals = [10 ** 3, 10 ** 4, 10 ** 5]
+
+cases = list(product(p_ms, crossovers, evals))
+
+df = pd.DataFrame(columns=["p_m", "crossover", "eval", "fit_best", "probs", "probs1", "probs2p5"])
+global_fitness = dict()
+
+for p_m, crossover, ev in cases:
+	res = GA(N=N, k=k, p_c=0.6, p_m=p_m, evals=ev, crossOver=crossover, track_best=False, f=fxy)
+	gen, g_fitness, fit_best, probs, probs1, probs2p5 = res
+	global_fitness[f"{p_m}_{crossover}_{ev}"] = g_fitness
+	df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+
+df.to_csv("data_by_cases.csv", index=False)
+
+import json
+with open("global_fitness.json", "w") as fichier_json:
+    json.dump(global_fitness, fichier_json)
+```
+
 ## Statistics: 
 
 I tried to register those 4 cases.
@@ -37,7 +70,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 df = pd.read_csv("data_by_cases.csv")
-df = df.sort_values(by="probs").reset_index(drop=True)
+df = df.sort_values(by="probs")
 x = range(len(df))
 
 plt.plot(x, df["probs"])
@@ -49,7 +82,7 @@ plt.title("Probability of the closeness to the optimum")
 plt.show()
 ```
 
-Those are the main configurations: (p_m, crossover, fitness evaluation).
+Il y a des configurations(p_m, crossover, fitness evaluation).
 
 ```{python}
 df

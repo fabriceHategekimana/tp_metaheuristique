@@ -111,26 +111,81 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> app <span class="im">import</span> GA, fxy</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> itertools <span class="im">import</span> product</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># population size</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">100</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># individual bit string</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> <span class="dv">20</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">### Run GA for all above cases 10 times</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>p_m <span class="op">=</span> [<span class="fl">0.01</span>, <span class="fl">0.1</span>]</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>crossover <span class="op">=</span> [<span class="va">False</span>, <span class="va">True</span>]</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>cases <span class="op">=</span> <span class="bu">list</span>(product(p_m, crossover))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># population size</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># individual bit string</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> <span class="dv">20</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">### Run GA for all above cases 10 times</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>p_ms <span class="op">=</span> [<span class="fl">0.01</span>, <span class="fl">0.1</span>]</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>crossovers <span class="op">=</span> [<span class="va">False</span>, <span class="va">True</span>]</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>evals <span class="op">=</span> [<span class="dv">10</span> <span class="op">**</span> <span class="dv">3</span>, <span class="dv">10</span> <span class="op">**</span> <span class="dv">4</span>, <span class="dv">10</span> <span class="op">**</span> <span class="dv">5</span>]</span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> GA(N<span class="op">=</span><span class="dv">10</span>, k<span class="op">=</span><span class="dv">20</span>, p_c<span class="op">=</span><span class="dv">0</span>, p_m<span class="op">=</span><span class="dv">0</span>, evals<span class="op">=</span><span class="dv">20</span>, crossOver<span class="op">=</span><span class="va">True</span>, track_best<span class="op">=</span><span class="va">False</span>, f<span class="op">=</span>fxy)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>cases <span class="op">=</span> <span class="bu">list</span>(product(p_ms, crossovers, evals))</span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>df, g_fitness, fit_best, probs, probs1, probs2p5 <span class="op">=</span> res</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>res[<span class="dv">0</span>]</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>res[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="1">
-<pre><code>[-503.8570696579565, -452.4542290118199]</code></pre>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(columns<span class="op">=</span>[<span class="st">"p_m"</span>, <span class="st">"crossover"</span>, <span class="st">"eval"</span>, <span class="st">"fit_best"</span>, <span class="st">"probs"</span>, <span class="st">"probs1"</span>, <span class="st">"probs2p5"</span>])</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>global_fitness <span class="op">=</span> <span class="bu">dict</span>()</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> p_m, crossover, ev <span class="kw">in</span> cases:</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    res <span class="op">=</span> GA(N<span class="op">=</span>N, k<span class="op">=</span>k, p_c<span class="op">=</span><span class="fl">0.6</span>, p_m<span class="op">=</span>p_m, evals<span class="op">=</span>ev, crossOver<span class="op">=</span>crossover, track_best<span class="op">=</span><span class="va">False</span>, f<span class="op">=</span>fxy)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    gen, g_fitness, fit_best, probs, probs1, probs2p5 <span class="op">=</span> res</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    global_fitness[<span class="ss">f"</span><span class="sc">{</span>p_m<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>crossover<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>ev<span class="sc">}</span><span class="ss">"</span>] <span class="op">=</span> g_fitness</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index<span class="op">=</span>df.columns), ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>df.to_csv(<span class="st">"data_by_cases.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="st">"global_fitness.json"</span>, <span class="st">"w"</span>) <span class="im">as</span> fichier_json:</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    json.dump(global_fitness, fichier_json)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: In a future version, object-dtype columns with all-bool values will not be included in reductions with bool_only=True. Explicitly cast to bool dtype instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: In a future version, object-dtype columns with all-bool values will not be included in reductions with bool_only=True. Explicitly cast to bool dtype instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: In a future version, object-dtype columns with all-bool values will not be included in reductions with bool_only=True. Explicitly cast to bool dtype instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: In a future version, object-dtype columns with all-bool values will not be included in reductions with bool_only=True. Explicitly cast to bool dtype instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: In a future version, object-dtype columns with all-bool values will not be included in reductions with bool_only=True. Explicitly cast to bool dtype instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: In a future version, object-dtype columns with all-bool values will not be included in reductions with bool_only=True. Explicitly cast to bool dtype instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: In a future version, object-dtype columns with all-bool values will not be included in reductions with bool_only=True. Explicitly cast to bool dtype instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: In a future version, object-dtype columns with all-bool values will not be included in reductions with bool_only=True. Explicitly cast to bool dtype instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: In a future version, object-dtype columns with all-bool values will not be included in reductions with bool_only=True. Explicitly cast to bool dtype instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: In a future version, object-dtype columns with all-bool values will not be included in reductions with bool_only=True. Explicitly cast to bool dtype instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)
+/tmp/ipykernel_2261991/2785611846.py:24: FutureWarning: In a future version, object-dtype columns with all-bool values will not be included in reductions with bool_only=True. Explicitly cast to bool dtype instead.
+  df = df.append(pd.Series((p_m, crossover, ev, fit_best, probs, probs1, probs2p5), index=df.columns), ignore_index=True)</code></pre>
 </div>
 </div>
 </section>
@@ -156,6 +211,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>2.5% away from optimum</li>
 </ol>
 <p>All 3 cases are plotted with/out keeping track of best</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data_by_cases.csv"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(df)<span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>plt.plot(x, df[<span class="st">"probs"</span>])</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>plt.plot(x, df[<span class="st">"probs1"</span>])</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>plt.plot(x, df[<span class="st">"probs2p5"</span>])</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Number of generation"</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Probability"</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Probability of the closeness to the optimum"</span>)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="Fabrice_Hategekimana_TP6_2023_files/figure-html/cell-3-output-1.png" width="589" height="449"></p>
+</div>
+</div>
 <p>We expect 6 figures at the end, with each figure having all 4 combinations of crossover &amp; mutation on the same plot</p>
 </section>
 <section id="comment-on-your-results-observation-difference-between-keeping-track-or-not" class="level3">

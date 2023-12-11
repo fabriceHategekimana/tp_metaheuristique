@@ -295,7 +295,7 @@ def GA(N, k, p_c, p_m, evals, crossOver=True, track_best=True, f=fxy):
     probs = len(gen[gen["fitness"] >= fitnesses[best_index]]) / len(gen)
     probs1 = len(gen[gen["fitness"] >= (fitnesses[best_index]*99)/100]) / len(gen)
     probs2p5 = len(gen[gen["fitness"] >= (fitnesses[best_index]*97.5)/100]) / len(gen)
-    return gen, g_fitness, fit_best, probs, probs1, probs2p5
+    return gen, g_fitness, calculate_fitness(f, fit_best), probs, probs1, probs2p5
 
 
 def my_f(x, y):
@@ -303,7 +303,7 @@ def my_f(x, y):
 
 
 if __name__ == '__main__':
-    res = GA(N=6, k=20, p_c=0.1, p_m=0, evals=24,
+    res = GA(N=200, k=20, p_c=0.1, p_m=0, evals=(10 ** 5),
              crossOver=True, track_best=True, f=my_f)
     df, g_fitness, fit_best, probs, probs1, probs2p5 = res
     print("df:", df)
