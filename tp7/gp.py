@@ -25,6 +25,9 @@ class CPU:
     def pop(self) -> int | None:
         return self.pile.pop() if len(self.pile) > 0 else None
 
+    def state(self):
+        print("state:", self.pile)
+
 
 # These are the instructions
 def AND(cpu: CPU, data: list[int]):
@@ -53,7 +56,7 @@ def XOR(cpu: CPU, data: list[int]):
 
 def NOT(cpu: CPU, data: list[int]):
     v = cpu.pop()
-    cpu.push(not v)
+    cpu.push(int(not v))
 
 
 # Push values of variables on the stack.
@@ -75,6 +78,7 @@ def X4(cpu: CPU, data: list[int]):
 
 # Execute a program
 def execute(program: list[str], cpu: CPU, data: list[int]) -> int | None:
+    cpu.reset()
     for cmd in program:
         CALLS[cmd](cpu, data)
     return cpu.pop()
@@ -94,7 +98,7 @@ def computeFitness(prog: list[str], cpu: CPU, dataSet: list[list[int]]) -> int:
 
 
 # Selection using 2-tournament.
-def selection(Population, cpu: CPU, dataSet):
+def selection(Population: list[list[str]], cpu: CPU, dataSet: list[list[int]]) -> list[list[str]]:
     listOfFitness = []
     for i in range(len(Population)):
         prog = Population[i]
@@ -113,7 +117,7 @@ def selection(Population, cpu: CPU, dataSet):
     return newPopulation
 
 
-def crossover(Population, p_c):
+def crossover(Population: list[list[str]], p_c: float) -> list[list[str]]:
     newPopulation = []
     n = len(Population)
     i = 0
@@ -133,7 +137,7 @@ def crossover(Population, p_c):
     return newPopulation
 
 
-def mutation(Population, p_m, terminalSet, functionSet):
+def mutation(Population: list[list[str]], p_m: float, terminalSet: list[str], functionSet: list[str]) -> list[list[str]]:
     newPopulation = []
     nT = len(terminalSet) - 1
     nF = len(functionSet) - 1
@@ -177,43 +181,43 @@ dataSet: list[list[int]] = [
     [1, 1, 1, 1, 0],
 ]
 
-cpu: CPU = CPU()
 
-# Function and terminal sets.
-functionSet: list[str] = ["AND", "OR", "NOT", "XOR"]
-terminalSet: list[str] = ["X1", "X2", "X3", "X4"]
+def algo():
+    # CPU
+    cpu: CPU = CPU()
 
-# Example of program.
-prog: list[str] = ["X1", "X2", "AND", "X3", "OR"]
-progLength: int = 5
-# Generator
-prog = randomProg(progLength, functionSet, terminalSet)
+    # Function and terminal sets.
+    functionSet: list[str] = ["AND", "OR", "NOT", "XOR"]
+    terminalSet: list[str] = ["X1", "X2", "X3", "X4"]
 
-# fitness
-print(prog)
+    # Parameters
+    N = 3
+    progLength = 3
+    p_c = 0.1
+    p_m = 0.8
+    generations = 7000
 
-# Execute a program on one row of the data set.
-data: list[int] = dataSet[0]
-output: int | None = execute(prog, cpu, data)
-print(output)
-print("-------------")
+    # generate a population
+    progs = [randomProg(progLength, functionSet, terminalSet) for x in range(N)]
 
-# Parameters
-# popSize = None  # TODO
-# p_c = None  # TODO
-# p_m = None  # TODO
-# Generate the initial population
-# Evolution. Loop on the creation of population at generation i+1 from population at generation i, through selection, crossover and mutation.
+    for generation in range(generations):
+        # selectionne les survivants
+        progs2 = selection(progs, cpu, dataSet)
 
-# TODO
-# generate a population
-prog = randomProg(progLength, functionSet, terminalSet)
+        # crossover les parents
+        progs3 = crossover(progs2, p_c)
 
-# calcule le fitness
-score = computeFitness(prog, cpu, dataSet)
+        # mutation
+        progs4 = mutation(progs3, p_m, terminalSet, functionSet)
 
-# selectionne les survivants
+        # select the new generation
+        progs = progs4
+
+    print("progs:", progs)
+    print("respo:", [computeFitness(prog, cpu, dataSet) for prog in progs])
 
 
-# crossover les parents
-# mutation
+if __name__ == '__main__':
+    cpu: CPU = CPU()
+    fitness = computeFitness(["X1", "X2", "X3"], cpu, dataSet)
+    print("fitness:", fitness)
